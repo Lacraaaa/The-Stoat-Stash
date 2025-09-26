@@ -37,7 +37,7 @@ StoatStash.change_scene_with_simple_transition("res://next_level.tscn")
 - File I/O (Simple Save/Load system)
 
 ## Examples
-See the 'Tests/' foloder for working code samples
+See the 'Tests/' folder for working code samples
 
 # License
 MIT License - feel free to use in any project commercial or otherwise
