@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://bfd6wqkfhv6k1"]
+
+[ext_resource type="Texture2D" uid="uid://cwdmkq1sv8825" path="res://Tests/icon.svg" id="1_vqer2"]
+[ext_resource type="Script" uid="uid://drhyelq2u28gi" path="res://Tests/platformer.gd" id="2_t6c0e"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t6c0e"]
+size = Vector2(347, 55)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wg0wg"]
+size = Vector2(44, 44)
+
+[node name="Platformertest" type="Node2D"]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(627, 570)
+
+[node name="Icon" type="Sprite2D" parent="StaticBody2D"]
+position = Vector2(13.999999, 27.999998)
+scale = Vector2(2.5593805, 0.44000006)
+texture = ExtResource("1_vqer2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(11.5, 28.5)
+shape = SubResource("RectangleShape2D_t6c0e")
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(632, 514)
+script = ExtResource("2_t6c0e")
+
+[node name="Icon" type="Sprite2D" parent="CharacterBody2D"]
+scale = Vector2(0.33727247, 0.3410496)
+texture = ExtResource("1_vqer2")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("RectangleShape2D_wg0wg")

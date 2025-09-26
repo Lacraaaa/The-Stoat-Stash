@@ -1,0 +1,66 @@
+[gd_scene load_steps=6 format=3 uid="uid://7cq8msvfe68p"]
+
+[ext_resource type="Script" uid="uid://bm148bsdhif3a" path="res://Tests/tests2d.gd" id="1_t6tmp"]
+[ext_resource type="Texture2D" uid="uid://cwdmkq1sv8825" path="res://Tests/icon.svg" id="2_p7vmc"]
+[ext_resource type="Script" uid="uid://cvnjhysdpwide" path="res://Tests/character_body_2d.gd" id="2_q8qg7"]
+[ext_resource type="ButtonGroup" uid="uid://d326ofwktvwvs" path="res://Tests/characterwrap.tres" id="4_q8qg7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t6tmp"]
+size = Vector2(128, 128)
+
+[node name="Tests" type="Node2D"]
+script = ExtResource("1_t6tmp")
+
+[node name="ShakeScreen" type="Button" parent="."]
+offset_top = 615.0
+offset_right = 111.0
+offset_bottom = 646.0
+text = "Shake Screen"
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(576, 324)
+
+[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
+position = Vector2(576, 325)
+script = ExtResource("2_q8qg7")
+
+[node name="Icon" type="Sprite2D" parent="CharacterBody2D"]
+texture = ExtResource("2_p7vmc")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
+shape = SubResource("RectangleShape2D_t6tmp")
+
+[node name="WrapOptionButtons" type="VBoxContainer" parent="."]
+offset_left = 975.0
+offset_top = 1.0
+offset_right = 1153.0
+offset_bottom = 102.0
+
+[node name="Wrap" type="CheckButton" parent="WrapOptionButtons"]
+layout_mode = 2
+button_pressed = true
+button_group = ExtResource("4_q8qg7")
+text = "Wrap Character"
+
+[node name="Clamp" type="CheckButton" parent="WrapOptionButtons"]
+layout_mode = 2
+button_group = ExtResource("4_q8qg7")
+text = "Clamp Character
+"
+
+[node name="None" type="CheckButton" parent="WrapOptionButtons"]
+layout_mode = 2
+button_group = ExtResource("4_q8qg7")
+text = "Neither"
+
+[node name="Label" type="Label" parent="."]
+offset_left = 468.0
+offset_top = 613.0
+offset_right = 561.0
+offset_bottom = 636.0
+text = "Hello world!"
+
+[connection signal="pressed" from="ShakeScreen" to="." method="_on_shake_screen_pressed"]
+[connection signal="toggled" from="WrapOptionButtons/Wrap" to="." method="_on_wrap_toggled"]
+[connection signal="toggled" from="WrapOptionButtons/Clamp" to="." method="_on_clamp_toggled"]
+[connection signal="toggled" from="WrapOptionButtons/None" to="." method="_on_none_toggled"]
