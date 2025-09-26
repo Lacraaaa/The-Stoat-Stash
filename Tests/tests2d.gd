@@ -9,7 +9,8 @@ var trackNum = false
 func _ready() -> void:
 	StoatStash.typewriter_text($Label, "Try the combo up down left right left right", 0.1)
 	StoatStash.animate_ui_slide_in($ShakeScreen, Vector2.DOWN)
-	StoatStash.play_music(preload("res://Tests/mainMenu.wav"))
+	if(!StoatStash.is_music_playing()):
+		StoatStash.play_music(preload("res://Tests/mainMenu.wav"))
 
 func _process(delta: float) -> void:
 	if currentEdge == CharacterEdgeHandler.WRAP:

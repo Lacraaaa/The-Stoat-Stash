@@ -524,25 +524,34 @@ func _cleanup_music_tweens() -> void:
 
 
 func set_sfx_volume(volume: float) -> void:
+	"""Sets volume of all sfx sounds"""
 	_sfx_volume = clamp(volume, 0.0, 1.0)
 
 func set_music_volume(volume: float) -> void:
+	"""Sets volume of all music sounds"""
 	if(_music_player == null): return
 	_music_volume = clamp(volume, 0.0, 1.0)
 	if _music_player.playing and not _music_muted:
 		_music_player.volume_db = _to_db(_music_volume)
 
 func mute_sfx(muted: bool) -> void:
+	"""Mutes all sfx"""
 	_sfx_muted = muted
 
 func mute_music(muted: bool) -> void:
+	"""mutes all music"""
 	if _music_player == null: return
 	_music_muted = muted
 	if _music_player.playing:
 		_music_player.volume_db = -80.0 if muted else _to_db(_music_volume)
 
 func _to_db(linear: float) -> float:
+	"""(0.0, 1.0) made into a deciable scale non linearly"""
 	return -80.0 if linear <= 0.0 else 20.0 * log(linear) / log(10.0)
+
+func is_music_playing() -> bool:
+	return _music_player != null && _music_player.playing
+
 
 ##################################################################################
 ################################## SCENE UTILS ###################################
