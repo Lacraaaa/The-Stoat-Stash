@@ -133,6 +133,7 @@ func rotate_around_point(point: Vector2, center: Vector2, angle: float) -> Vecto
 ##################################################################################
 var _active_shake_tweens: Array[Tween] = []
 var _active_shake_timers: Array[SceneTreeTimer] = []
+var _camera_tween_associations: Dictionary = {}
 
 func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	"""Shakes camera and returns tween for optional control"""
@@ -143,6 +144,7 @@ func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	if intensity < 0.0 or time < 0.0:
 		push_warning("shake: intensity and time must be positive")
 		return null
+	stop_camera_shake(camera)
 	
 	var original_offset = camera.offset
 	var tween = create_tween()
@@ -165,13 +167,27 @@ func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	var cleanup_timer = get_tree().create_timer(time)
 	_active_shake_timers.append(cleanup_timer)
 	
+	_camera_tween_associations[camera] = [tween, original_offset, cleanup_timer]
+	
 	cleanup_timer.timeout.connect(func():
+		# Only clean up if this is still the current association for this camera
+		if !_camera_tween_associations.has(camera): 
+			return
+			
+		var current_association = _camera_tween_associations[camera]
+		# Verify this timer and tween are still the active ones for this camera
+		if current_association[0] != tween || current_association[2] != cleanup_timer:
+			return  # A new shake has replaced this one
+			
+		# Proceed with cleanup
 		if is_instance_valid(tween):
 			tween.kill()
-			_active_shake_tweens.erase(tween)
 		if is_instance_valid(camera):
 			camera.offset = original_offset
+		
+		_active_shake_tweens.erase(tween)
 		_active_shake_timers.erase(cleanup_timer)
+		_camera_tween_associations.erase(camera)
 	)
 	
 	# Clean up if tween is manually killed
@@ -192,6 +208,28 @@ func shake_medium(camera: Camera2D, time: float = 0.3) -> void:
 func shake_heavy(camera: Camera2D, time: float = 0.5) -> void:
 	"""Shakes camera with heavy shake"""
 	shake(camera, 8.0, time)
+
+func stop_camera_shake(camera: Camera2D) -> bool:
+	"""Stop all active shakes for specific camera"""
+	if _camera_tween_associations.has(camera):
+		var association = _camera_tween_associations[camera]
+		var tween = association[0]
+		var original_offset = association[1]
+		var cleanup_timer = association[2]
+		
+		if is_instance_valid(tween):
+			tween.kill()
+		
+		if is_instance_valid(camera):
+			camera.offset = original_offset
+		
+		# Clean up arrays
+		_active_shake_tweens.erase(tween)
+		_active_shake_timers.erase(cleanup_timer)
+		_camera_tween_associations.erase(camera)
+		
+		return true
+	return false
 
 func flash_screen(color: Color = Color.WHITE, duration: float = 0.1) -> void:
 	"""Flashes screen for some duration"""
@@ -284,12 +322,15 @@ func shake_3d(camera: Camera3D, intensity: float, time: float) -> Tween:
 		push_warning("shake_3d: intensity and time must be positive")
 		return null
 	
+	stop_camera_shake_3d(camera)
+	
 	var original_position = camera.position
 	var tween = create_tween()
 	tween.set_loops()
 	
 	# Store reference for cleanup
 	_active_shake_tweens.append(tween)
+	
 	
 	var shake_callable = func():
 		if is_instance_valid(camera) and is_instance_valid(tween):
@@ -306,13 +347,26 @@ func shake_3d(camera: Camera3D, intensity: float, time: float) -> Tween:
 	var cleanup_timer = get_tree().create_timer(time)
 	_active_shake_timers.append(cleanup_timer)
 	
+	_camera_tween_associations[camera] = [tween, original_position, cleanup_timer]
+	
 	cleanup_timer.timeout.connect(func():
+		if !_camera_tween_associations.has(camera):
+			return
+		
+		var current_association = _camera_tween_associations[camera]
+		# Verify this timer and tween are still the active ones for this camera
+		if current_association[0] != tween || current_association[2] != cleanup_timer:
+			return  # A new shake has replaced this one
+			
+		# Proceed with cleanup
 		if is_instance_valid(tween):
 			tween.kill()
-			_active_shake_tweens.erase(tween)
 		if is_instance_valid(camera):
 			camera.position = original_position
+		
+		_active_shake_tweens.erase(tween)
 		_active_shake_timers.erase(cleanup_timer)
+		_camera_tween_associations.erase(camera)
 	)
 	
 	# Clean up if tween is manually killed
@@ -333,6 +387,28 @@ func shake_medium_3d(camera: Camera3D, time: float = 0.3) -> void:
 func shake_heavy_3d(camera: Camera3D, time: float = 0.5) -> void:
 	"""Shakes 3D camera with heavy shake"""
 	shake_3d(camera, 0.2, time)
+
+func stop_camera_shake_3d(camera: Camera3D) -> bool:
+	"""Stop all active shakes for specific camera"""
+	if _camera_tween_associations.has(camera):
+		var association = _camera_tween_associations[camera]
+		var tween = association[0]
+		var original_position = association[1]
+		var cleanup_timer = association[2]
+		
+		if is_instance_valid(tween):
+			tween.kill()
+		
+		if is_instance_valid(camera):
+			camera.position = original_position
+		
+		# Clean up arrays
+		_active_shake_tweens.erase(tween)
+		_active_shake_timers.erase(cleanup_timer)
+		_camera_tween_associations.erase(camera)
+		
+		return true
+	return false
 
 func get_mouse_world_position_3d_plane(camera: Camera3D) -> Vector3:
 	"""Gets mouse position projected to 3D world on a plane"""
