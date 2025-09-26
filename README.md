@@ -15,7 +15,8 @@ StoatStash.shake_light($Camera2D)
 StoatStash.play_sfx(explosion_sound, 0.8)
 
 # buffered input (great for platformers)
-if StoatStash.is_action_just_pressed_buffered("jump", 0.15):
+StoatStash.register_input_tracking("jump")
+if is_on_floor() and StoatStash.consume_buffered_input("jump",0.15):
 	player.jump()
 
 # Scene transition with fade
