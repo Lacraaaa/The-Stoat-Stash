@@ -1,5 +1,5 @@
 # The Stoat Stash
-An single file utility library for godot 4, aimed to be unopininated and easy to use. Primarily for game jams and prototyping.
+An single file utility library for godot 4, aimed to be unopinionated and easy to use. Primarily for game jams and prototyping.
 
 ## Install
 1. Download stoat_stash.gd
