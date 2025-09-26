@@ -41,4 +41,5 @@ See the 'Tests/' foloder for working code samples
 
 # License
 MIT License - feel free to use in any project commercial or otherwise
+
 You may find it useful to simply pick and choose fuctions from this library if you're working on a longer term project
