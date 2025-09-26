@@ -22,3 +22,19 @@ if is_on_floor() and StoatStash.consume_buffered_input("jump",0.15):
 # Scene transition with fade
 StoatStash.change_scene_with_simple_transition("res://next_level.tscn")
 ```
+
+## Included
+- Math Utils (Range remapping, weighted random, circle points, etc)
+- Camera (Screen shake (2d/3d), flash effects, bounds checking, etc)
+- Audio System (SFX playback, music with crossfading, volume controls, etc)
+- Scene Management (Transitions, scene switching, restarts)
+- Input Helpers (Buffered Inputs, Sequence/Combo detection)
+- Animations (Fade in/out, pulse effects, UI animations etc)
+- File I/O (Simple Save/Load system)
+
+## Examples
+See the 'Tests/' foloder for working code samples
+
+# License
+MIT License - feel free to use in any project commercial or otherwise
+You may find it useful to simply pick and choose fuctions from this library if you're working on a longer term project
