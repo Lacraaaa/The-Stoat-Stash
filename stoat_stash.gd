@@ -27,50 +27,51 @@ extends Node
 ##################################################################################
 ################################## MATH UTILS ####################################
 ##################################################################################
+
+## Returns true with given probablity (0.0 to 1.0)
 func chance(probability: float) -> bool:
-	"""Returns true with given probablity (0.0 to 1.0)"""
 	return randf() < clamp(probability, 0.0, 1.0)
 
+## Returns random point within a circle
 func random_point_in_circle(radius: float) -> Vector2:
-	"""Returns random point within a circle"""
 	var angle = randf() * TAU
 	var r = sqrt(randf()) * radius
 	return Vector2(cos(angle) * r, sin(angle) * r)
 
+## Returns random point on perimeter of circle
 func random_point_on_circle_perimeter(radius: float) -> Vector2:
-	"""Returns random point on perimeter of circle"""
 	var angle = randf() * TAU
 	return Vector2(cos(angle) * radius, sin(angle) * radius)
 
+## Wraps angle to 0 to TAU (2*PI) range
 func wrap_angle(angle: float) -> float:
-	"""Wraps angle to 0 to TAU (2*PI) range"""
 	var result = fmod(angle, TAU)
 	if result < 0.0:
 		result += TAU
 	return result
 
+## Returns shortest signed angular distance from `from` to `to` in range [-PI, PI)
 func angle_difference(from: float, to: float) -> float:
-	"""Returns shortest signed angular distance from `from` to `to` in range [-PI, PI)"""
 	var diff = fmod((to - from) + PI, TAU) - PI
 	return diff
 
+## Returns snapped position on grid
 func snap_to_grid(pos: Vector2, grid_size: float) -> Vector2:
-	"""Returns snapped position on grid"""
 	if grid_size <= 0.0:
 		push_warning("snap_to_grid: grid_size must be positive")
 		return pos
 	return Vector2(round(pos.x/grid_size) * grid_size, round(pos.y / grid_size) * grid_size)
 
+## Returns random color
 func random_color() -> Color:
-	"""Returns random color"""
 	return Color(randf(), randf(), randf(), 1.0)
 
+## Creates vector from angle and length
 func vector_from_angle(angle: float, length: float = 1.0) -> Vector2:
-	"""Creates vector from angle and length"""
 	return Vector2(cos(angle), sin(angle)) * length
 
+## Rotates point around center by angle
 func rotate_around_point(point: Vector2, center: Vector2, angle: float) -> Vector2:
-	"""Rotates point around center by angle"""
 	var cos_a = cos(angle)
 	var sin_a = sin(angle)
 	var dx = point.x - center.x
@@ -83,12 +84,13 @@ func rotate_around_point(point: Vector2, center: Vector2, angle: float) -> Vecto
 ##################################################################################
 ################################## CAMERA UTILS ##################################
 ##################################################################################
+
 var _active_shake_tweens: Array[Tween] = []
 var _active_shake_timers: Array[SceneTreeTimer] = []
 var _camera_tween_associations: Dictionary = {}
 
+## Shakes camera and returns tween for optional control
 func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
-	"""Shakes camera and returns tween for optional control"""
 	if not camera or not is_instance_valid(camera):
 		push_warning("shake: invalid camera provided")
 		return null
@@ -149,20 +151,20 @@ func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	
 	return tween
 
+## Shakes camera with light shake
 func shake_light(camera: Camera2D, time: float = 0.2) -> void:
-	"""Shakes camera with light shake"""
 	shake(camera, 3.0, time)
 
+## Shakes camera with medium shake
 func shake_medium(camera: Camera2D, time: float = 0.3) -> void:
-	"""Shakes camera with medium shake"""
 	shake(camera, 5.0, time)
 
+## Shakes camera with heavy shake
 func shake_heavy(camera: Camera2D, time: float = 0.5) -> void:
-	"""Shakes camera with heavy shake"""
 	shake(camera, 8.0, time)
 
+## Stop all active shakes for specific camera
 func stop_camera_shake(camera: Camera2D) -> bool:
-	"""Stop all active shakes for specific camera"""
 	if _camera_tween_associations.has(camera):
 		var association = _camera_tween_associations[camera]
 		var tween = association[0]
@@ -183,8 +185,8 @@ func stop_camera_shake(camera: Camera2D) -> bool:
 		return true
 	return false
 
+## Flashes screen for some duration
 func flash_screen(color: Color = Color.WHITE, duration: float = 0.1) -> void:
-	"""Flashes screen for some duration"""
 	if duration <= 0.0:
 		push_warning("flash_screen: duration must be positive")
 		return
@@ -200,8 +202,8 @@ func flash_screen(color: Color = Color.WHITE, duration: float = 0.1) -> void:
 	tween.tween_property(flash, "modulate:a", 0.0, duration)
 	tween.tween_callback(flash.queue_free)
 
+## Gets the visible bounds of a camera
 func get_camera_bounds(camera: Camera2D) -> Rect2:
-	"""Gets the visible bounds of a camera"""
 	if not camera or not is_instance_valid(camera):
 		push_warning("get_camera_bounds: invalid camera provided")
 		return Rect2()
@@ -216,8 +218,8 @@ func get_camera_bounds(camera: Camera2D) -> Rect2:
 	var top_left = camera.global_position - size / 2
 	return Rect2(top_left, size)
 
+## Wraps object position to camera bounds with extra buffer zone
 func wrap_node_to_screen(object: Node2D, camera: Camera2D, buffer: float = 0.0) -> void:
-	"""Wraps object position to camera bounds with extra buffer zone"""
 	if not object or not is_instance_valid(object) or not camera or not is_instance_valid(camera):
 		push_warning("wrap_node_to_screen: invalid object or camera provided")
 		return
@@ -240,16 +242,16 @@ func wrap_node_to_screen(object: Node2D, camera: Camera2D, buffer: float = 0.0) 
 	
 	object.global_position = pos
 
+## Checks if object is completely off screen
 func is_off_screen(object: Node2D, camera: Camera2D, buffer: float = 0.0) -> bool:
-	"""Checks if object is completely off screen"""
 	if not object or not is_instance_valid(object) or not camera or not is_instance_valid(camera):
 		return true
 	
 	var bounds = get_camera_bounds(camera).grow(buffer)
 	return not bounds.has_point(object.global_position)
 
+## Clamps object position to stay withen camera bounds
 func clamp_node_to_screen(object: Node2D, camera: Camera2D, margin: float = 0.0) -> Vector2:
-	"""Clamps object position to stay withen camera bounds"""
 	if not object or not is_instance_valid(object) or not camera or not is_instance_valid(camera):
 		push_warning("clamp_node_to_screen: invalid object or camera provided")
 		return Vector2.ZERO
@@ -264,8 +266,8 @@ func clamp_node_to_screen(object: Node2D, camera: Camera2D, margin: float = 0.0)
 	object.global_position = pos
 	return pos
 
+## Shakes 3D camera and returns tween for optional control
 func shake_3d(camera: Camera3D, intensity: float, time: float) -> Tween:
-	"""Shakes 3D camera and returns tween for optional control"""
 	if not camera or not is_instance_valid(camera):
 		push_warning("shake_3d: invalid camera provided")
 		return null
@@ -328,20 +330,20 @@ func shake_3d(camera: Camera3D, intensity: float, time: float) -> Tween:
 	
 	return tween
 
+## Shakes 3D camera with light shake
 func shake_light_3d(camera: Camera3D, time: float = 0.2) -> void:
-	"""Shakes 3D camera with light shake"""
 	shake_3d(camera, 0.05, time)
 
+## Shakes 3D camera with medium shake
 func shake_medium_3d(camera: Camera3D, time: float = 0.3) -> void:
-	"""Shakes 3D camera with medium shake"""
 	shake_3d(camera, 0.1, time)
 
+## Shakes 3D camera with heavy shake
 func shake_heavy_3d(camera: Camera3D, time: float = 0.5) -> void:
-	"""Shakes 3D camera with heavy shake"""
 	shake_3d(camera, 0.2, time)
 
+## Stop all active shakes for specific camera
 func stop_camera_shake_3d(camera: Camera3D) -> bool:
-	"""Stop all active shakes for specific camera"""
 	if _camera_tween_associations.has(camera):
 		var association = _camera_tween_associations[camera]
 		var tween = association[0]
@@ -362,8 +364,8 @@ func stop_camera_shake_3d(camera: Camera3D) -> bool:
 		return true
 	return false
 
+## Gets mouse position projected to 3D world on a plane
 func get_mouse_world_position_3d_plane(camera: Camera3D) -> Vector3:
-	"""Gets mouse position projected to 3D world on a plane"""
 	if not camera or not is_instance_valid(camera):
 		push_warning("get_mouse_world_position_3d: invalid camera provided")
 		return Vector3.ZERO
@@ -378,8 +380,8 @@ func get_mouse_world_position_3d_plane(camera: Camera3D) -> Vector3:
 	
 	return Vector3.ZERO
 
+## Gets mouse position projected to 3D world based on ray collision
 func get_mouse_world_position_3d_collision(camera: Camera3D) -> Vector3:
-	"""Gets mouse position projected to 3D world based on ray collision"""
 	if not camera or not is_instance_valid(camera):
 		push_warning("get_mouse_world_position_3d_collision: invalid camera provided")
 		return Vector3.ZERO
@@ -397,9 +399,8 @@ func get_mouse_world_position_3d_collision(camera: Camera3D) -> Vector3:
 	
 	return Vector3.ZERO
 
-# Add cleanup function for all camera effects
+## Cleans up all active camera shake effects and timers
 func cleanup_camera_effects() -> void:
-	"""Cleans up all active camera shake effects and timers"""
 	for tween in _active_shake_tweens:
 		if is_instance_valid(tween):
 			tween.kill()
@@ -421,8 +422,8 @@ var _should_loop_music: bool = false
 var _music_fade_tween: Tween
 var _crossfade_tween: Tween
 
+## Plays an sfx sound
 func play_sfx(sound: AudioStream, volume: float = 1.0, pitch: float = 1.0) -> void:
-	"""Plays an sfx sound"""
 	if not sound or _sfx_muted:
 		return
 	
@@ -436,8 +437,8 @@ func play_sfx(sound: AudioStream, volume: float = 1.0, pitch: float = 1.0) -> vo
 	# Auto cleanup
 	player.finished.connect(player.queue_free, CONNECT_ONE_SHOT)
 
+## Plays music
 func play_music(music: AudioStream, volume: float = 1.0, loop: bool = true, fade_in_duration: float = 0.0) -> void:
-	"""Plays music"""
 	if(_music_player == null):
 		_music_player = AudioStreamPlayer.new()
 		add_child(_music_player)
@@ -472,8 +473,8 @@ func play_music(music: AudioStream, volume: float = 1.0, loop: bool = true, fade
 	if loop:
 		_music_player.finished.connect(_on_music_finished, CONNECT_ONE_SHOT)
 
+## Crossfades from current music to new music over specified duration
 func crossfade_music(new_music: AudioStream, volume: float = 1.0, loop: bool = true, crossfade_duration: float = 1.0) -> void:
-	"""Crossfades from current music to new music over specified duration"""
 	if(_music_player == null):
 		_music_player = AudioStreamPlayer.new()
 		add_child(_music_player)
@@ -522,8 +523,8 @@ func crossfade_music(new_music: AudioStream, volume: float = 1.0, loop: bool = t
 			old_player.queue_free()
 	).set_delay(crossfade_duration)
 
+## Helper function called when music finished
 func _on_music_finished() -> void:
-	"""Helper function called when music finished"""
 	current_music_finished.emit()
 	
 	if _should_loop_music and _music_player and _music_player.stream:
@@ -532,58 +533,59 @@ func _on_music_finished() -> void:
 		if not _music_player.finished.is_connected(_on_music_finished):
 			_music_player.finished.connect(_on_music_finished, CONNECT_ONE_SHOT)
 
+## Stops music
 func stop_music() -> void:
-	"""Stops music"""
 	_cleanup_music_connections()
 	_should_loop_music = false
 	_music_player.stop()
 
+## Clean up any existing music connections
 func _cleanup_music_connections() -> void:
-	"""Clean up any existing music connections"""
 	if _music_player.finished.is_connected(_on_music_finished):
 		_music_player.finished.disconnect(_on_music_finished)
 
+## Clean up any existing music tweens
 func _cleanup_music_tweens() -> void:
-	"""Clean up any existing music tweens"""
 	if _music_fade_tween and is_instance_valid(_music_fade_tween):
 		_music_fade_tween.kill()
 	if _crossfade_tween and is_instance_valid(_crossfade_tween):
 		_crossfade_tween.kill()
 
-
+## Sets volume of all sfx sounds
 func set_sfx_volume(volume: float) -> void:
-	"""Sets volume of all sfx sounds"""
 	_sfx_volume = clamp(volume, 0.0, 1.0)
 
+## Sets volume of all music sounds
 func set_music_volume(volume: float) -> void:
-	"""Sets volume of all music sounds"""
 	if(_music_player == null): return
 	_music_volume = clamp(volume, 0.0, 1.0)
 	if _music_player.playing and not _music_muted:
 		_music_player.volume_db = _to_db(_music_volume)
 
+## Mutes all sfx
 func mute_sfx(muted: bool) -> void:
-	"""Mutes all sfx"""
 	_sfx_muted = muted
 
+## Mutes all music
 func mute_music(muted: bool) -> void:
-	"""mutes all music"""
 	if _music_player == null: return
 	_music_muted = muted
 	if _music_player.playing:
 		_music_player.volume_db = -80.0 if muted else _to_db(_music_volume)
 
+## (0.0, 1.0) made into a deciable scale non linearly
 func _to_db(linear: float) -> float:
-	"""(0.0, 1.0) made into a deciable scale non linearly"""
 	return -80.0 if linear <= 0.0 else 20.0 * log(linear) / log(10.0)
 
+## Returns whether music is playing
 func is_music_playing() -> bool:
 	return _music_player != null && _music_player.playing
-
 
 ##################################################################################
 ################################## SCENE UTILS ###################################
 ##################################################################################
+
+## Changes scene to target scene path
 func change_scene(scene_path: String):
 	if not FileAccess.file_exists(scene_path):
 		push_warning("change_scene: scene file does not exist: " + scene_path)
@@ -592,8 +594,8 @@ func change_scene(scene_path: String):
 	clear_input_buffer()
 	get_tree().change_scene_to_file(scene_path)
 
+## Changes scene with fade transition
 func change_scene_with_simple_transition(scene_path: String, transition_duration: float = 0.5) -> void:
-	"""Changes scene with fade transition"""
 	if not FileAccess.file_exists(scene_path):
 		push_warning("change_scene_with_simple_transition: scene file does not exist: " + scene_path)
 		return
@@ -614,8 +616,8 @@ func change_scene_with_simple_transition(scene_path: String, transition_duration
 	tween.tween_property(fade, "modulate:a", 0.0, transition_duration / 2)
 	tween.tween_callback(fade.queue_free)
 
+## Restarts current scene
 func restart_scene():
-	"""Restarts current scene"""
 	clear_input_buffer()
 	get_tree().reload_current_scene()
 
@@ -625,14 +627,13 @@ func restart_scene():
 var _tracked_inputs: Dictionary = {}
 var _sequences: Dictionary = {}
 
-# Buffer types enum for clarity
 enum BufferType {
 	TIME,
 	FRAMES
 }
 
+## Register an action to be tracked for buffering
 func register_input_tracking(action: String) -> void:
-	"""Register an action to be tracked for buffering"""
 	if not InputMap.has_action(action):
 		push_warning("register_input_tracking: action '" + action + "' does not exist")
 		return
@@ -643,12 +644,12 @@ func register_input_tracking(action: String) -> void:
 		"consumed": true  # Start as consumed so first check doesn't immediately trigger
 	}
 
+## Unregister an action from tracking
 func unregister_input_tracking(action: String) -> bool:
-	"""Unregister an action from tracking"""
 	return _tracked_inputs.erase(action)
 
+## Check if a tracked action has been pressed within the buffer time
 func is_buffered_input_available(action: String, buffer_time: float = 0.1) -> bool:
-	"""Check if a tracked action has been pressed within the buffer time"""
 	if not _tracked_inputs.has(action):
 		return false
 	
@@ -661,8 +662,8 @@ func is_buffered_input_available(action: String, buffer_time: float = 0.1) -> bo
 	var elapsed = current_time - data.last_pressed_time
 	return elapsed <= max(0.0, buffer_time)
 
+## Check if a tracked action has been pressed within the buffer frames
 func is_buffered_input_available_frames(action: String, buffer_frames: int = 6) -> bool:
-	"""Check if a tracked action has been pressed within the buffer frames"""
 	if not _tracked_inputs.has(action):
 		return false
 	
@@ -675,8 +676,8 @@ func is_buffered_input_available_frames(action: String, buffer_frames: int = 6) 
 	var frames_passed = current_frame - data.last_pressed_frame
 	return frames_passed <= max(0, buffer_frames)
 
+## Consume a buffered input if it's available within the buffer time
 func consume_buffered_input(action: String, buffer_time: float = 0.1) -> bool:
-	"""Consume a buffered input if it's available within the buffer time"""
 	if not _tracked_inputs.has(action):
 		return false
 	
@@ -694,8 +695,8 @@ func consume_buffered_input(action: String, buffer_time: float = 0.1) -> bool:
 	
 	return false
 
+## Consume a buffered input if it's available within the buffer frames
 func consume_buffered_input_frames(action: String, buffer_frames: int = 6) -> bool:
-	"""Consume a buffered input if it's available within the buffer frames"""
 	if not _tracked_inputs.has(action):
 		return false
 	
@@ -713,8 +714,8 @@ func consume_buffered_input_frames(action: String, buffer_frames: int = 6) -> bo
 	
 	return false
 
+## Check if buffered input is available without consuming it
 func peek_buffered_input(action: String, buffer_time: float = 0.1) -> bool:
-	"""Check if buffered input is available without consuming it"""
 	if not _tracked_inputs.has(action):
 		return false
 	
@@ -727,8 +728,8 @@ func peek_buffered_input(action: String, buffer_time: float = 0.1) -> bool:
 	var elapsed = current_time - data.last_pressed_time
 	return elapsed <= max(0.0, buffer_time)
 
+## Check if buffered input is available without consuming it (frame-based)
 func peek_buffered_input_frames(action: String, buffer_frames: int = 6) -> bool:
-	"""Check if buffered input is available without consuming it (frame-based)"""
 	if not _tracked_inputs.has(action):
 		return false
 	
@@ -741,8 +742,8 @@ func peek_buffered_input_frames(action: String, buffer_frames: int = 6) -> bool:
 	var frames_passed = current_frame - data.last_pressed_frame
 	return frames_passed <= max(0, buffer_frames)
 
+## Get time elapsed since the tracked action was last pressed
 func get_input_elapsed_time(action: String) -> float:
-	"""Get time elapsed since the tracked action was last pressed"""
 	if not _tracked_inputs.has(action):
 		return -1.0
 	
@@ -750,8 +751,8 @@ func get_input_elapsed_time(action: String) -> float:
 	var current_time = Time.get_unix_time_from_system()
 	return current_time - data.last_pressed_time
 
+## Get frames elapsed since the tracked action was last pressed
 func get_input_elapsed_frames(action: String) -> int:
-	"""Get frames elapsed since the tracked action was last pressed"""
 	if not _tracked_inputs.has(action):
 		return -1
 	
@@ -759,8 +760,8 @@ func get_input_elapsed_frames(action: String) -> int:
 	var current_frame = Engine.get_process_frames()
 	return current_frame - data.last_pressed_frame
 
+## Update all tracked inputs - call this every frame
 func _update_tracked_inputs() -> void:
-	"""Update all tracked inputs - call this every frame"""
 	var current_time = Time.get_unix_time_from_system()
 	var current_frame = Engine.get_process_frames()
 	
@@ -771,23 +772,19 @@ func _update_tracked_inputs() -> void:
 			data.last_pressed_frame = current_frame
 			data.consumed = false
 
-# Sequence functions remain the same
+## Returns true if an entire input sequence has been pressed
 func is_input_sequence_just_pressed(sequence: Array[String], timeout: float = 2.0) -> bool:
-	"""Returns true if an entire input sequence has been pressed"""
 	if sequence.is_empty():
 		push_warning("is_input_sequence_just_pressed: empty sequence provided")
 		return false
 	
-	# Check if all actions exist
 	for action in sequence:
 		if not InputMap.has_action(action):
 			push_warning("is_input_sequence_just_pressed: action '" + action + "' does not exist")
 			return false
 	
-	# Generate a unique key for this sequence
 	var sequence_key = "_".join(sequence)
 	
-	# Initialize sequence tracking if it doesn't exist
 	if not _sequences.has(sequence_key):
 		_sequences[sequence_key] = {
 			"target_sequence": sequence,
@@ -799,7 +796,6 @@ func is_input_sequence_just_pressed(sequence: Array[String], timeout: float = 2.
 	var seq_data = _sequences[sequence_key]
 	var current_time = Time.get_unix_time_from_system()
 	
-	# Find which action was just pressed
 	var new_input = ""
 	for action in sequence:
 		if Input.is_action_just_pressed(action):
@@ -819,7 +815,6 @@ func is_input_sequence_just_pressed(sequence: Array[String], timeout: float = 2.
 	
 	var expected_index = seq_data.current_inputs.size()
 	
-	# Check if this input matches the expected next input in sequence
 	if expected_index < sequence.size() and sequence[expected_index] == new_input:
 		seq_data.current_inputs.append(new_input)
 		
@@ -836,10 +831,10 @@ func is_input_sequence_just_pressed(sequence: Array[String], timeout: float = 2.
 	
 	return false
 
+## Returns progress of sequence completion (0.0 to 1.0), or 0.0 if sequence doesn't exist
 func get_sequence_progress(sequence: Array[String]) -> float:
-	"""Returns progress of sequence completion (0.0 to 1.0), or -1.0 if sequence doesn't exist"""
 	if sequence.is_empty():
-		return -1.0
+		return 0.0
 	
 	var sequence_key = "_".join(sequence)
 	
@@ -858,24 +853,24 @@ func get_sequence_progress(sequence: Array[String]) -> float:
 	
 	return float(seq_data.current_inputs.size()) / float(sequence.size())
 
+## Clears all input buffers and sequences, useful when changing scenes
 func clear_input_buffer():
-	"""Clears all input buffers and sequences, useful when changing scenes"""
 	_tracked_inputs.clear()
 	_sequences.clear()
 
+## Clears only input sequences, keeping input buffers
 func clear_input_sequences():
-	"""Clears only input sequences, keeping input buffers"""
 	_sequences.clear()
 
+## Returns array of currently tracked actions
 func get_tracked_actions() -> Array[String]:
-	"""Returns array of currently tracked actions"""
 	var actions: Array[String] = []
 	for action in _tracked_inputs.keys():
 		actions.append(action)
 	return actions
 
+## Helper function to update sequence timeouts
 func _update_sequence_timeouts(_delta: float) -> void:
-	"""Helper function to update sequence timeouts"""
 	var current_time = Time.get_unix_time_from_system()
 	
 	for sequence_name in _sequences.keys():
@@ -888,17 +883,18 @@ func _update_sequence_timeouts(_delta: float) -> void:
 ##################################################################################
 ################################## TIMER UTILS ###################################
 ##################################################################################
+## Calls a function after delay
 func delayed_call(callback: Callable, delay: float) -> void:
-	"""Calls a function after delay"""
 	if delay < 0.0:
 		push_warning("delayed_call: delay must be positive")
 		delay = 0.0
 	
 	await get_tree().create_timer(delay).timeout
-	callback.call()
+	if(callback.is_valid()):
+		callback.call()
 
+## Repeats a function call at intervals
 func repeat_call(callback: Callable, interval: float, times: int = -1) -> void:
-	"""Repeats a function call at intervals"""
 	if interval <= 0.0:
 		push_warning("repeat_call: interval must be positive")
 		return
@@ -907,14 +903,15 @@ func repeat_call(callback: Callable, interval: float, times: int = -1) -> void:
 	while times == -1 or count < times:
 		if callback.is_valid():
 			callback.call()
-		await get_tree().create_timer(interval).timeout
-		count += 1
+			await get_tree().create_timer(interval).timeout
+			count += 1
 
 ##################################################################################
 ################################## NODE UTILS ####################################
 ##################################################################################
+
+## Recursively finds node by name with depth limit, returns null if none found
 func find_node_by_name(node_name: String, root: Node = null, max_depth: int = 10) -> Node:
-	"""Recursively finds node by name with depth limit, returns null if none found"""
 	if not root:
 		root = get_tree().root
 	
@@ -931,8 +928,8 @@ func find_node_by_name(node_name: String, root: Node = null, max_depth: int = 10
 	
 	return null
 
+## Safely connects a signal, avoiding duplicate connections
 func safe_signal_connect(signal_obj: Signal, callable: Callable) -> bool:
-	"""Safely connects a signal, avoiding duplicate connections"""
 	if not callable.is_valid():
 		push_warning("safe_connect: invalid callable provided")
 		return false
@@ -941,8 +938,8 @@ func safe_signal_connect(signal_obj: Signal, callable: Callable) -> bool:
 		return true
 	return false
 
+## Safely disconnects a signal, avoiding duplicate connections
 func safe_signal_disconnect(signal_obj: Signal, callable: Callable) -> bool:
-	"""Safely connects a signal, avoiding duplicate connections"""
 	if not callable.is_valid():
 		push_warning("safe_disconnect: invalid callable provided")
 		return false
@@ -954,8 +951,9 @@ func safe_signal_disconnect(signal_obj: Signal, callable: Callable) -> bool:
 ##################################################################################
 ################################# ANIMATION UTILS ################################
 ##################################################################################
+
+## Makes node pulse by scaling
 func pulse_node(node: CanvasItem, scale_mult: float = 1.2, duration: float = 0.2) -> void:
-	"""Makes node pulse by scaling"""
 	if not node or not is_instance_valid(node):
 		push_warning("pulse_node: invalid node provided")
 		return
@@ -971,8 +969,8 @@ func pulse_node(node: CanvasItem, scale_mult: float = 1.2, duration: float = 0.2
 	tween.tween_property(node, "scale", target_scale, duration/2)
 	tween.tween_property(node, "scale", original_scale, duration/2)
 
+## Fades node in
 func fade_in(node: CanvasItem, duration: float = 0.3) -> void:
-	"""Fades node in"""
 	if not node or not is_instance_valid(node):
 		push_warning("fade_in: invalid node provided")
 		return
@@ -987,8 +985,8 @@ func fade_in(node: CanvasItem, duration: float = 0.3) -> void:
 	var tween = create_tween()
 	tween.tween_property(node, "modulate:a", 1.0, duration)
 
+## Fades node out
 func fade_out(node: CanvasItem, duration: float = 0.3, hide_when_done: bool = true) -> void:
-	"""Fades node out"""
 	if not node or not is_instance_valid(node):
 		push_warning("fade_out: invalid node provided")
 		return
@@ -1088,8 +1086,9 @@ func ease_out_bounce(t: float) -> float:
 ##################################################################################
 #################################### UI UTILS ####################################
 ##################################################################################
+
+## Animates text with a typewriter effect
 func typewriter_text(label: Label, text: String, speed: float = 0.05) -> void:
-	"""Animates text with a typewriter effect"""
 	if not label or not is_instance_valid(label):
 		push_warning("typewriter_text: invalid label provided")
 		return
@@ -1103,8 +1102,8 @@ func typewriter_text(label: Label, text: String, speed: float = 0.05) -> void:
 		label.text += text[i]
 		await get_tree().create_timer(safe_speed).timeout
 
+## Scales UI element in from specified direction
 func animate_ui_slide_in(control: Control, direction: Vector2, duration: float = 0.3, easing: Tween.TransitionType = Tween.TRANS_BACK) -> void:
-	"""Scales UI element in from specified direction"""
 	if not control or not is_instance_valid(control):
 		push_warning("animate_ui_slide_in: invalid control provided")
 		return
@@ -1125,8 +1124,8 @@ func animate_ui_slide_in(control: Control, direction: Vector2, duration: float =
 	tween.set_trans(easing)
 	tween.tween_property(control, "position", original_pos, duration)
 
+## Scales UI element in with scale effect
 func animate_ui_scale_in(control: Control, duration: float = 0.3, easing: Tween.TransitionType = Tween.TRANS_BACK) -> void:
-	"""Scales UI element in with scale effect"""
 	if not control or not is_instance_valid(control):
 		push_warning("animated_ui_scale_in: invalid control provided")
 		return
@@ -1146,8 +1145,9 @@ func animate_ui_scale_in(control: Control, duration: float = 0.3, easing: Tween.
 ##################################################################################
 #################################### FILE UTILS ##################################
 ##################################################################################
+
+## Saves data to file, returns bool of success
 func save_data(data: Dictionary, filename: String = "save_game.dat") -> bool:
-	"""Saves data to file, returns bool of success"""
 	if filename.is_empty():
 		push_warning("save_data: filename cannot be empty")
 		return false
@@ -1161,8 +1161,8 @@ func save_data(data: Dictionary, filename: String = "save_game.dat") -> bool:
 	push_warning("save_data: failed to open file for writing: " + filename)
 	return false
 
+## Loads data from file
 func load_data(filename: String = "save_game.dat") -> Dictionary:
-	"""Loads data from file"""
 	if filename.is_empty():
 		push_warning("load_data: filename cannot be empty")
 		return {}
@@ -1183,8 +1183,8 @@ func load_data(filename: String = "save_game.dat") -> Dictionary:
 			push_warning("load_data: failed to parse JSON from file: " + filename)
 	return {}
 
+## Deletes save file
 func delete_save(filename: String = "save_game.dat"):
-	"""Deletes save file"""
 	if filename.is_empty():
 		push_warning("delete_save: filename cannot be empty")
 		return false
