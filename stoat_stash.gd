@@ -979,13 +979,23 @@ func find_node_by_name(node_name: String, root: Node = null, max_depth: int = 10
 	
 	return null
 
-func safe_connect(signal_obj: Signal, callable: Callable) -> bool:
+func safe_signal_connect(signal_obj: Signal, callable: Callable) -> bool:
 	"""Safely connects a signal, avoiding duplicate connections"""
 	if not callable.is_valid():
 		push_warning("safe_connect: invalid callable provided")
 		return false
 	if not signal_obj.is_connected(callable):
 		signal_obj.connect(callable)
+		return true
+	return false
+
+func safe_signal_disconnect(signal_obj: Signal, callable: Callable) -> bool:
+	"""Safely connects a signal, avoiding duplicate connections"""
+	if not callable.is_valid():
+		push_warning("safe_disconnect: invalid callable provided")
+		return false
+	if signal_obj.is_connected(callable):
+		signal_obj.disconnect(callable)
 		return true
 	return false
 
