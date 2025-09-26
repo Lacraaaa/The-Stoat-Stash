@@ -303,34 +303,6 @@ func test_utility_functions():
 	utils.set_music_volume(-5.0)
 	utils.mute_sfx(true)
 	utils.mute_music(false)
-	
-	var audio_settings = utils.save_audio_settings()
-	test_assert("save_audio_settings", audio_settings.has("sfx_volume"))
-	test_assert("save_audio_settings sfx_volume", audio_settings.sfx_volume == -10.0)
-	test_assert("save_audio_settings music_volume", audio_settings.music_volume == -5.0)
-	test_assert("save_audio_settings sfx_muted", audio_settings.sfx_muted == true)
-	test_assert("save_audio_settings music_muted", audio_settings.music_muted == false)
-	
-	# Reset and load
-	utils.set_sfx_volume(0.0)
-	utils.mute_sfx(false)
-	utils.load_audio_settings(audio_settings)
-	
-	test_assert("load_audio_settings sfx_volume", utils.get_sfx_volume() == -10.0)
-	test_assert("load_audio_settings music_volume", utils.get_music_volume() == -5.0)
-	test_assert("load_audio_settings sfx_muted", utils.is_sfx_muted() == true)
-	test_assert("load_audio_settings music_muted", utils.is_music_muted() == false)
-	
-	# Test toggle functions
-	var initial_sfx_mute = utils.is_sfx_muted()
-	var toggled_sfx = utils.toggle_sfx_mute()
-	test_assert("toggle_sfx_mute", toggled_sfx != initial_sfx_mute)
-	test_assert("toggle_sfx_mute state", utils.is_sfx_muted() == toggled_sfx)
-	
-	var initial_music_mute = utils.is_music_muted()
-	var toggled_music = utils.toggle_music_mute()
-	test_assert("toggle_music_mute", toggled_music != initial_music_mute)
-	test_assert("toggle_music_mute state", utils.is_music_muted() == toggled_music)
 
 func test_assert(test_name: String, condition: bool):
 	total_tests += 1

@@ -131,6 +131,9 @@ func rotate_around_point(point: Vector2, center: Vector2, angle: float) -> Vecto
 ##################################################################################
 ################################## CAMERA UTILS ##################################
 ##################################################################################
+var _active_shake_tweens: Array[Tween] = []
+var _active_shake_timers: Array[SceneTreeTimer] = []
+
 func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	"""Shakes camera and returns tween for optional control"""
 	if not camera or not is_instance_valid(camera):
@@ -145,8 +148,11 @@ func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	var tween = create_tween()
 	tween.set_loops()
 	
+	# Store reference for cleanup
+	_active_shake_tweens.append(tween)
+	
 	var shake_callable = func():
-		if is_instance_valid(camera):
+		if is_instance_valid(camera) and is_instance_valid(tween):
 			var random_offset = Vector2(
 				randf_range(-intensity, intensity),
 				randf_range(-intensity, intensity)
@@ -155,13 +161,22 @@ func shake(camera: Camera2D, intensity: float, time: float) -> Tween:
 	
 	tween.tween_callback(shake_callable).set_delay(1/Engine.get_frames_per_second())
 	
-	# Cleanup when shake time expires
+	# Create cleanup timer
 	var cleanup_timer = get_tree().create_timer(time)
+	_active_shake_timers.append(cleanup_timer)
+	
 	cleanup_timer.timeout.connect(func():
 		if is_instance_valid(tween):
 			tween.kill()
+			_active_shake_tweens.erase(tween)
 		if is_instance_valid(camera):
 			camera.offset = original_offset
+		_active_shake_timers.erase(cleanup_timer)
+	)
+	
+	# Clean up if tween is manually killed
+	tween.finished.connect(func():
+		_active_shake_tweens.erase(tween)
 	)
 	
 	return tween
@@ -273,8 +288,11 @@ func shake_3d(camera: Camera3D, intensity: float, time: float) -> Tween:
 	var tween = create_tween()
 	tween.set_loops()
 	
+	# Store reference for cleanup
+	_active_shake_tweens.append(tween)
+	
 	var shake_callable = func():
-		if is_instance_valid(camera):
+		if is_instance_valid(camera) and is_instance_valid(tween):
 			var random_offset = Vector3(
 				randf_range(-intensity, intensity),
 				randf_range(-intensity, intensity),
@@ -282,15 +300,24 @@ func shake_3d(camera: Camera3D, intensity: float, time: float) -> Tween:
 			)
 			camera.position = original_position + random_offset
 	
-	tween.tween_callback(shake_callable).set_delay(1/Engine.get_frames_per_second()) # ~60fps
+	tween.tween_callback(shake_callable).set_delay(1/Engine.get_frames_per_second())
 	
-	# Cleanup when shake time expires
+	# Create cleanup timer
 	var cleanup_timer = get_tree().create_timer(time)
+	_active_shake_timers.append(cleanup_timer)
+	
 	cleanup_timer.timeout.connect(func():
 		if is_instance_valid(tween):
 			tween.kill()
+			_active_shake_tweens.erase(tween)
 		if is_instance_valid(camera):
 			camera.position = original_position
+		_active_shake_timers.erase(cleanup_timer)
+	)
+	
+	# Clean up if tween is manually killed
+	tween.finished.connect(func():
+		_active_shake_tweens.erase(tween)
 	)
 	
 	return tween
@@ -341,6 +368,16 @@ func get_mouse_world_position_3d_collision(camera: Camera3D) -> Vector3:
 		return result.position
 	
 	return Vector3.ZERO
+
+# Add cleanup function for all camera effects
+func cleanup_camera_effects() -> void:
+	"""Cleans up all active camera shake effects and timers"""
+	for tween in _active_shake_tweens:
+		if is_instance_valid(tween):
+			tween.kill()
+	_active_shake_tweens.clear()
+	
+	_active_shake_timers.clear()
 
 ##################################################################################
 ################################## AUDIO UTILS ###################################
@@ -490,6 +527,7 @@ func set_sfx_volume(volume: float) -> void:
 	_sfx_volume = clamp(volume, 0.0, 1.0)
 
 func set_music_volume(volume: float) -> void:
+	if(_music_player == null): return
 	_music_volume = clamp(volume, 0.0, 1.0)
 	if _music_player.playing and not _music_muted:
 		_music_player.volume_db = _to_db(_music_volume)
@@ -498,6 +536,7 @@ func mute_sfx(muted: bool) -> void:
 	_sfx_muted = muted
 
 func mute_music(muted: bool) -> void:
+	if _music_player == null: return
 	_music_muted = muted
 	if _music_player.playing:
 		_music_player.volume_db = -80.0 if muted else _to_db(_music_volume)
@@ -512,6 +551,7 @@ func change_scene(scene_path: String):
 	if not FileAccess.file_exists(scene_path):
 		push_warning("change_scene: scene file does not exist: " + scene_path)
 		return
+	cleanup_camera_effects()
 	clear_input_buffer()
 	get_tree().change_scene_to_file(scene_path)
 
@@ -533,7 +573,7 @@ func change_scene_with_simple_transition(scene_path: String, transition_duration
 	
 	var tween = create_tween()
 	tween.tween_property(fade, "modulate:a", 1.0, transition_duration / 2)
-	tween.tween_callback(get_tree().change_scene_to_file.bind(scene_path))
+	tween.tween_callback(change_scene.bind(scene_path))
 	tween.tween_property(fade, "modulate:a", 0.0, transition_duration / 2)
 	tween.tween_callback(fade.queue_free)
 
