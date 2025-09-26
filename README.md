@@ -12,12 +12,16 @@ An single file utility library for godot 4, aimed to be unopininated and easy to
 StoatStash.shake_light($Camera2D)
 
 # Play sound effect
-StoatStash.play_sfx(explosion_sound, 0.8)
+StoatStash.play_sfx(explosion_sound)
 
 # buffered input (great for platformers)
 StoatStash.register_input_tracking("jump")
 if is_on_floor() and StoatStash.consume_buffered_input("jump",0.15):
 	player.jump()
+
+# combo input
+if StoatStash.is_input_sequence_just_pressed(["up","down","left","right","left","right"],1.0):
+	# do something
 
 # Scene transition with fade
 StoatStash.change_scene_with_simple_transition("res://next_level.tscn")
