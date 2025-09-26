@@ -27,57 +27,9 @@ extends Node
 ##################################################################################
 ################################## MATH UTILS ####################################
 ##################################################################################
-func remap_value(value: float, from_min: float, from_max: float, to_min: float, to_max: float) -> float:
-	"""Remaps a value from one range to another"""
-	if from_max == from_min:
-		push_warning("remap value: from_min and from_max are equal")
-		return to_min
-	return to_min + (value - from_min) * (to_max - to_min) / (from_max - from_min)
-
 func chance(probability: float) -> bool:
 	"""Returns true with given probablity (0.0 to 1.0)"""
 	return randf() < clamp(probability, 0.0, 1.0)
-
-func weighted_random(weights: Array) -> int:
-	"""Returns a random index based on weights array, or -1 if invalid"""
-	if weights.is_empty():
-		push_warning("weighted_random: weight array is empty")
-		return -1
-	
-	var valid_weights = []
-	var valid_indices = []
-	var total = 0.0
-	
-	# Filter out invalid weights and track valid indices
-	for i in range(weights.size()):
-		var weight = weights[i]
-		if typeof(weight) in [TYPE_FLOAT, TYPE_INT]:
-			if weight > 0:
-				valid_weights.append(weight)
-				valid_indices.append(i)
-				total += weight
-			elif weight < 0:
-				push_warning("weighted_random: negative weight found at index " + str(i))
-		else:
-			push_warning("weighted_random: non-numeric weight found at index " + str(i))
-	
-	if valid_weights.is_empty():
-		push_warning("weighted_random: no valid positive weights found")
-		return -1
-	
-	if total <= 0.0:
-		push_warning("weighted_random: total weight is zero or negative")
-		return -1
-	
-	var r = randf() * total
-	var cumulative = 0.0
-	
-	for i in range(valid_weights.size()):
-		cumulative += valid_weights[i]
-		if r <= cumulative:
-			return valid_indices[i]
-	
-	return valid_indices[0] if valid_indices.size() > 0 else -1
 
 func random_point_in_circle(radius: float) -> Vector2:
 	"""Returns random point within a circle"""

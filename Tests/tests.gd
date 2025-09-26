@@ -28,17 +28,6 @@ func _ready():
 
 func test_math_functions():
 	print("\n=== Testing Math Functions ===")
-	
-	# Test remap_value
-	test_assert("remap_value basic", 
-		abs(utils.remap_value(5.0, 0.0, 10.0, 0.0, 100.0) - 50.0) < 0.001)
-	
-	test_assert("remap_value edge case", 
-		abs(utils.remap_value(0.0, 0.0, 10.0, -50.0, 50.0) - (-50.0)) < 0.001)
-	
-	test_assert("remap_value reverse", 
-		abs(utils.remap_value(2.0, 0.0, 10.0, 100.0, 0.0) - 80.0) < 0.001)
-	
 	# Test chance function
 	var chance_results = []
 	for i in range(1000):
@@ -52,20 +41,6 @@ func test_math_functions():
 	
 	test_assert("chance 0.0", not utils.chance(0.0))
 	test_assert("chance 1.0", utils.chance(1.0))
-	
-	# Test weighted_random
-	var weights = [1.0, 2.0, 3.0]
-	var weight_counts = [0, 0, 0]
-	for i in range(1000):
-		var result = utils.weighted_random(weights)
-		if result >= 0 and result < weight_counts.size():
-			weight_counts[result] += 1
-	
-	# Index 2 should appear most often (weight 3), index 0 least often (weight 1)
-	test_assert("weighted_random distribution", 
-		weight_counts[2] > weight_counts[1] and weight_counts[1] > weight_counts[0])
-	
-	test_assert("weighted_random empty array", utils.weighted_random([]) == -1)
 	
 	# Test random_point_in_circle
 	var point = utils.random_point_in_circle(10.0)
