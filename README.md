@@ -41,7 +41,7 @@ See the 'Tests/' folder for working code samples
 
 # Contributing
 Feel free to contribute. Currently help simplifying the input utilities or adding docs would be greatly appreciated.
-Almost all PR's with net positive contributions will be accepted, exceptions to of course PR's containing obfucated code etc.
+Almost all PR's with net positive contributions will be accepted, exceptions to of course PR's containing obfuscated code etc.
 
 # License
 MIT License - feel free to use in any project commercial or otherwise
