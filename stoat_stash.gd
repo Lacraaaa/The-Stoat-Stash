@@ -16,7 +16,8 @@ copies or substantial portions of the Software.
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+AUTHORS OR COPYRIGHT HOLDERS BE L
+IABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
@@ -910,24 +911,6 @@ func repeat_call(callback: Callable, interval: float, times: int = -1) -> void:
 ################################## NODE UTILS ####################################
 ##################################################################################
 
-## Recursively finds node by name with depth limit, returns null if none found
-func find_node_by_name(node_name: String, root: Node = null, max_depth: int = 10) -> Node:
-	if not root:
-		root = get_tree().root
-	
-	if max_depth <= 0:
-		return null
-	
-	if root.name == node_name:
-		return root
-	
-	for child in root.get_children():
-		var found = find_node_by_name(node_name, child, max_depth - 1)
-		if found:
-			return found
-	
-	return null
-
 ## Safely connects a signal, avoiding duplicate connections
 func safe_signal_connect(signal_obj: Signal, callable: Callable) -> bool:
 	if not callable.is_valid():
@@ -1001,6 +984,75 @@ func fade_out(node: CanvasItem, duration: float = 0.3, hide_when_done: bool = tr
 	tween.tween_property(node, "modulate:a", 0.0, duration)
 	if hide_when_done:
 		tween.tween_callback(func(): if is_instance_valid(node): node.visible = false)
+
+func create_floating_text(
+	text: String,
+	position: Vector2,
+	duration: float = 1.0,
+	text_color: Color = Color.WHITE,
+	outline_color: Color = Color.BLACK,
+	outline_size: int = 0,
+	font_size: int = 16,
+	movement: Vector2 = Vector2(0, -50),
+	fade_out_effect: bool = true,
+	scale_effect: bool = false,
+	easing: Tween.TransitionType = Tween.TRANS_LINEAR,
+	font: Font = null # always the most annoying to specify
+) -> Label:
+	if duration <= 0.0:
+		push_warning("create_floating_text: duration must be positive")
+		return null
+	
+	var label = Label.new()
+	label.text = text
+	label.modulate = text_color
+	label.position = position
+	label.z_index = 100
+	
+	var label_settings = LabelSettings.new()
+	label_settings.font_size = font_size
+	label_settings.font_color = text_color
+	
+	if font:
+		label_settings.font = font
+	
+	# Apply outline
+	if outline_size > 0:
+		label_settings.outline_size = outline_size
+		label_settings.outline_color = outline_color
+	
+	label.label_settings = label_settings
+	
+	# Center the label on the position (need to wait one frame for size to update)
+	await get_tree().process_frame
+	if not is_instance_valid(label):
+		return null
+	
+	label.pivot_offset = label.size / 2
+	label.position -= label.size / 2
+	
+	var tween = create_tween()
+	tween.set_trans(easing)
+	tween.set_parallel(true)
+	
+	# Movement animation
+	if movement != Vector2.ZERO:
+		var target_pos = position + movement - label.size / 2
+		tween.tween_property(label, "position", target_pos, duration)
+	
+	# Fade out animation
+	if fade_out_effect:
+		tween.tween_property(label, "modulate:a", 0.0, duration)
+	
+	# Scale effect (pop in then fade)
+	if scale_effect:
+		label.scale = Vector2.ZERO
+		tween.tween_property(label, "scale", Vector2.ONE, duration * 0.2).set_trans(Tween.TRANS_BACK)
+	
+	# Cleanup
+	tween.tween_callback(label.queue_free).set_delay(duration)
+	
+	return label
 
 ##################################################################################
 ################################## EASING FUNCTIONS ##############################

@@ -18,7 +18,6 @@ func _ready():
 	# Run all tests
 	test_math_functions()
 	test_file_functions()
-	test_node_functions()
 	test_animation_functions()
 	test_easing_functions()
 	test_utility_functions()
@@ -142,38 +141,6 @@ func test_file_functions():
 	test_assert("delete_save empty filename", not utils.delete_save(""))
 
 
-func test_node_functions():
-	print("\n=== Testing Node Functions ===")
-	
-	# Create test nodes
-	var test_parent = Node.new()
-	test_parent.name = "TestParent"
-	add_child(test_parent)
-	
-	var test_child = Node.new()
-	test_child.name = "TestChild"
-	test_parent.add_child(test_child)
-	
-	var test_grandchild = Node.new()
-	test_grandchild.name = "TestGrandchild"
-	test_child.add_child(test_grandchild)
-	
-	# Test find_node_by_name
-	var found_child = utils.find_node_by_name("TestChild", test_parent)
-	test_assert("find_node_by_name direct child", found_child == test_child)
-	
-	var found_grandchild = utils.find_node_by_name("TestGrandchild", test_parent)
-	test_assert("find_node_by_name grandchild", found_grandchild == test_grandchild)
-	
-	var not_found = utils.find_node_by_name("NonExistent", test_parent)
-	test_assert("find_node_by_name not found", not_found == null)
-	
-	# Test depth limit
-	var depth_limited = utils.find_node_by_name("TestGrandchild", test_parent, 1)
-	test_assert("find_node_by_name depth limit", depth_limited == null)
-	
-	# Clean up
-	test_parent.queue_free()
 
 func test_animation_functions():
 	print("\n=== Testing Animation Functions ===")

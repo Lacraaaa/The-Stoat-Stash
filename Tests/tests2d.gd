@@ -21,6 +21,8 @@ func _process(delta: float) -> void:
 	if StoatStash.is_input_sequence_just_pressed(["up","down","left","right","left","right"],1.0):
 		StoatStash.pulse_node($CharacterBody2D,1.8, 0.5)
 		StoatStash.play_sfx(preload("res://Tests/death.wav"),0.5)
+		add_child(await StoatStash.create_floating_text("Epic!!!", $CharacterBody2D.position+Vector2(0,64),2.0,Color.GOLD,Color.GREEN, 10, 48, Vector2(0,-50), true, true, Tween.TRANS_ELASTIC, preload("res://Tests/Pixels.ttf")))
+		
 
 
 func _on_shake_screen_pressed() -> void:
