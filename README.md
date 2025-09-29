@@ -28,7 +28,7 @@ StoatStash.change_scene_with_simple_transition("res://next_level.tscn")
 ```
 
 ## Included
-- Math Utils (Range remapping, weighted random, circle points, etc)
+- Math Utils (Circle points, angle wrapping etc)
 - Camera (Screen shake (2d/3d), flash effects, bounds checking, etc)
 - Audio System (SFX playback, music with crossfading, volume controls, etc)
 - Scene Management (Transitions, scene switching, restarts)
@@ -41,9 +41,9 @@ See the 'Tests/' folder for working code samples
 
 # Contributing
 Feel free to contribute. Currently help simplifying the input utilities or adding docs would be greatly appreciated.
-Almost all PR's with net positive contributions will be accepted, exceptions to of course PR's containing obsfucated code etc.
+Almost all PR's with net positive contributions will be accepted, exceptions to of course PR's containing obfuscated code etc.
 
 # License
 MIT License - feel free to use in any project commercial or otherwise
 
-You may find it useful to simply pick and choose fuctions from this library if you're working on a longer term project
+You may find it useful to simply pick and choose functions from this library if you're working on a longer term project
