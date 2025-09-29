@@ -7,6 +7,7 @@ var currentEdge: CharacterEdgeHandler = CharacterEdgeHandler.WRAP
 var trackNum = false
 
 func _ready() -> void:
+	$MusicVolumeSlider.value = StoatStash._music_volume * 100
 	StoatStash.typewriter_text($Label, "Try the combo up down left right left right", 0.1)
 	StoatStash.animate_ui_slide_in($ShakeScreen, Vector2.DOWN)
 	if(!StoatStash.is_music_playing()):
