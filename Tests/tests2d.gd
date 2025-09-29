@@ -12,7 +12,7 @@ func _ready() -> void:
 	if(!StoatStash.is_music_playing()):
 		StoatStash.play_music(preload("res://Tests/mainMenu.wav"))
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if currentEdge == CharacterEdgeHandler.WRAP:
 		StoatStash.wrap_node_to_screen($CharacterBody2D, $Camera2D, 64)
 	if currentEdge == CharacterEdgeHandler.CLAMP:
