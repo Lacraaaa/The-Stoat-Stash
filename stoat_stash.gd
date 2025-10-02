@@ -906,6 +906,8 @@ func repeat_call(callback: Callable, interval: float, times: int = -1) -> void:
 			callback.call()
 			await get_tree().create_timer(interval).timeout
 			count += 1
+		else:
+			return
 
 ##################################################################################
 ################################## NODE UTILS ####################################
