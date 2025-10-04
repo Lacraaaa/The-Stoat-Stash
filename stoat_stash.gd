@@ -588,18 +588,12 @@ func is_music_playing() -> bool:
 
 ## Changes scene to target scene path
 func change_scene(scene_path: String):
-	if not FileAccess.file_exists(scene_path):
-		push_warning("change_scene: scene file does not exist: " + scene_path)
-		return
 	cleanup_camera_effects()
 	clear_input_buffer()
 	get_tree().change_scene_to_file(scene_path)
 
 ## Changes scene with fade transition
 func change_scene_with_simple_transition(scene_path: String, transition_duration: float = 0.5) -> void:
-	if not FileAccess.file_exists(scene_path):
-		push_warning("change_scene_with_simple_transition: scene file does not exist: " + scene_path)
-		return
 	if transition_duration <= 0.0:
 		push_warning("change_scene_with_simple_transition: transition duration must be positive")
 		return
