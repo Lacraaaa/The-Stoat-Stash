@@ -438,6 +438,36 @@ func play_sfx(sound: AudioStream, volume: float = 1.0, pitch: float = 1.0) -> vo
 	# Auto cleanup
 	player.finished.connect(player.queue_free, CONNECT_ONE_SHOT)
 
+func play_sfx_2d(sound: AudioStream, position: Vector2, volume: float = 1.0, pitch: float = 1.0, max_distance: float = 2000.0) -> void:
+	if not sound or _sfx_muted:
+		return
+	
+	var player = AudioStreamPlayer2D.new()
+	add_child(player)
+	player.stream = sound
+	player.volume_db = _to_db(_sfx_volume * volume)
+	player.pitch_scale = clamp(pitch, 0.1, 3.0)
+	player.max_distance = max_distance
+	player.global_position = position
+	player.play()
+	
+	player.finished.connect(player.queue_free, CONNECT_ONE_SHOT)
+
+func play_sfx_3d(sound: AudioStream, position: Vector3, volume: float = 1.0, pitch: float = 1.0, max_distance: float = 2000.0) -> void:
+	if not sound or _sfx_muted:
+		return
+	
+	var player = AudioStreamPlayer3D.new()
+	add_child(player)
+	player.stream = sound
+	player.volume_db = _to_db(_sfx_volume * volume)
+	player.pitch_scale = clamp(pitch, 0.1, 3.0)
+	player.max_distance = max_distance
+	player.global_position = position
+	player.play()
+	
+	player.finished.connect(player.queue_free, CONNECT_ONE_SHOT)
+
 ## Plays music
 func play_music(music: AudioStream, volume: float = 1.0, loop: bool = true, fade_in_duration: float = 0.0) -> void:
 	if(_music_player == null):
